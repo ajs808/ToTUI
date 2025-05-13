@@ -37,7 +37,7 @@ const mockEvaluateThoughts = (thoughts) => {
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([
-    { id: '1', position: { x: 0, y: 0 }, data: { label: 'Root' } },
+    { id: '1', position: { x: 0, y: 0 }, data: { label: 'Root', level: 0 } },
   ]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [prompt, setPrompt] = useState('');
@@ -52,7 +52,12 @@ export default function App() {
     const parentId = parentNode.id;
     const children = mockEvaluateThoughts(mockGenerateThoughts(parentNode.data.label, breadth));
     const yOffset = 150;
-    const spacing = 150;
+
+    const parentLevel = parentNode.data.level || 0;
+    const childLevel = parentLevel + 1;
+
+    const baseSpacing = 500;
+    const spacing = baseSpacing / Math.pow(1.5, childLevel);
     const totalWidth = (children.length - 1) * spacing;
 
     const newNodes = children.map((child, idx) => {
@@ -67,6 +72,7 @@ export default function App() {
           label: child.label,
           score: child.score,
           rank: child.rank,
+          level: childLevel,
         },
       };
     });
@@ -83,7 +89,7 @@ export default function App() {
 
   const handlePromptSubmit = () => {
     setNodes([
-      { id: '1', position: { x: 0, y: 0 }, data: { label: prompt || 'Root' } },
+      { id: '1', position: { x: 0, y: 0 }, data: { label: prompt || 'Root', level: 0 } },
     ]);
     setEdges([]);
     idCounter = 2;
