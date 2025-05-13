@@ -14,15 +14,14 @@ import '@xyflow/react/dist/style.css';
 let idCounter = 3;
 const getId = () => `${idCounter++}`;
 
-// Mock generation function for thought expansion
 const mockGenerateThoughts = (parentLabel, breadth) => {
-  return Array.from({ length: breadth }, (_, i) => ({
+  const thoughts = Array.from({ length: breadth }, (_, i) => ({
     label: `${parentLabel}.${i + 1}`,
     thought: `Thought generated from ${parentLabel} - option ${i + 1}`,
   }));
+  return thoughts;
 };
 
-// Mock evaluation function to randomly score and rank thoughts
 const mockEvaluateThoughts = (thoughts) => {
   const scored = thoughts.map(t => ({
     ...t,
@@ -32,7 +31,7 @@ const mockEvaluateThoughts = (thoughts) => {
   return scored.map((t, idx) => ({
     ...t,
     rank: idx + 1
-  }));
+  })).sort(() => Math.random() - 0.5); // shuffle again after ranking
 };
 
 export default function App() {
@@ -50,12 +49,12 @@ export default function App() {
 
   const expandNode = (parentNode) => {
     const parentId = parentNode.id;
-    const children = mockEvaluateThoughts(mockGenerateThoughts(parentNode.data.label, breadth));
+    const rawThoughts = mockGenerateThoughts(parentNode.data.label, breadth);
+    const children = mockEvaluateThoughts(rawThoughts);
     const yOffset = 150;
 
     const parentLevel = parentNode.data.level || 0;
     const childLevel = parentLevel + 1;
-
     const baseSpacing = 5000;
     const spacing = baseSpacing / Math.pow(3, childLevel);
     const totalWidth = (children.length - 1) * spacing;
@@ -73,6 +72,7 @@ export default function App() {
           score: child.score,
           rank: child.rank,
           level: childLevel,
+          parentId,
         },
       };
     });
@@ -81,6 +81,7 @@ export default function App() {
       id: `e${parentId}-${n.id}`,
       source: parentId,
       target: n.id,
+      style: n.data.rank === 1 ? { stroke: 'gold', strokeWidth: 2.5 } : {},
     }));
 
     setNodes((nds) => [...nds, ...newNodes]);
@@ -127,6 +128,7 @@ export default function App() {
       <ReactFlow
         nodes={nodes.map((n) => ({
           ...n,
+          style: n.data.rank === 1 ? { border: '2px solid gold', background: '#fffbea' } : {},
           data: {
             ...n.data,
             onClick: () => expandNode(n),
