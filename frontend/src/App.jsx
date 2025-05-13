@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -41,6 +41,8 @@ export default function App() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [prompt, setPrompt] = useState('');
   const [breadth, setBreadth] = useState(3);
+  const [autoSolve, setAutoSolve] = useState(false);
+  const [maxDepth, setMaxDepth] = useState(3);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -86,6 +88,11 @@ export default function App() {
 
     setNodes((nds) => [...nds, ...newNodes]);
     setEdges((eds) => [...eds, ...newEdges]);
+
+    if (autoSolve && childLevel < maxDepth) {
+      const best = newNodes.find(n => n.data.rank === 1);
+      if (best) setTimeout(() => expandNode(best), 300);
+    }
   };
 
   const handlePromptSubmit = () => {
@@ -94,6 +101,9 @@ export default function App() {
     ]);
     setEdges([]);
     idCounter = 2;
+    if (autoSolve) {
+      setTimeout(() => expandNode({ id: '1', position: { x: 0, y: 0 }, data: { label: prompt || 'Root', level: 0 } }), 300);
+    }
   };
 
   return (
@@ -117,6 +127,20 @@ export default function App() {
             value={breadth}
             onChange={(e) => setBreadth(parseInt(e.target.value) || 1)}
             placeholder="Breadth"
+            style={{ width: '80px', padding: '4px' }}
+          />
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <label><input type="checkbox" checked={autoSolve} onChange={(e) => setAutoSolve(e.target.checked)} /> Auto-solve</label>
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>Max Depth</label>
+          <input
+            type="number"
+            min="1"
+            value={maxDepth}
+            onChange={(e) => setMaxDepth(parseInt(e.target.value) || 1)}
+            placeholder="Max Depth"
             style={{ width: '80px', padding: '4px' }}
           />
         </div>
