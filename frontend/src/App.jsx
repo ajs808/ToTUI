@@ -15,10 +15,10 @@ let idCounter = 3;
 const getId = () => `${idCounter++}`;
 
 // Mock generation function for thought expansion
-const mockGenerateThoughts = (parentLabel) => {
-  return [1, 2, 3].map(i => ({
-    label: `${parentLabel}.${i}`,
-    thought: `Thought generated from ${parentLabel} - option ${i}`,
+const mockGenerateThoughts = (parentLabel, breadth) => {
+  return Array.from({ length: breadth }, (_, i) => ({
+    label: `${parentLabel}.${i + 1}`,
+    thought: `Thought generated from ${parentLabel} - option ${i + 1}`,
   }));
 };
 
@@ -41,6 +41,7 @@ export default function App() {
   ]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [prompt, setPrompt] = useState('');
+  const [breadth, setBreadth] = useState(3);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -49,16 +50,17 @@ export default function App() {
 
   const expandNode = (parentNode) => {
     const parentId = parentNode.id;
-    const children = mockEvaluateThoughts(mockGenerateThoughts(parentNode.data.label));
+    const children = mockEvaluateThoughts(mockGenerateThoughts(parentNode.data.label, breadth));
     const yOffset = 150;
-    const xOffset = -150;
+    const spacing = 150;
+    const totalWidth = (children.length - 1) * spacing;
 
     const newNodes = children.map((child, idx) => {
       const id = getId();
       return {
         id,
         position: {
-          x: parentNode.position.x + xOffset + idx * 150,
+          x: parentNode.position.x - totalWidth / 2 + idx * spacing,
           y: parentNode.position.y + yOffset,
         },
         data: {
@@ -90,14 +92,30 @@ export default function App() {
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <div style={{ padding: '10px', position: 'absolute', zIndex: 10, background: 'white', borderRadius: '8px', left: 10, top: 10 }}>
-        <input
-          type="text"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Enter problem prompt"
-          style={{ marginRight: '10px', padding: '4px' }}
-        />
-        <button onClick={handlePromptSubmit}>Submit Prompt</button>
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>Problem Prompt</label>
+          <input
+            type="text"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Enter problem prompt"
+            style={{ width: '300px', padding: '4px' }}
+          />
+        </div>
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>Breadth (number of thoughts per node)</label>
+          <input
+            type="number"
+            min="1"
+            value={breadth}
+            onChange={(e) => setBreadth(parseInt(e.target.value) || 1)}
+            placeholder="Breadth"
+            style={{ width: '80px', padding: '4px' }}
+          />
+        </div>
+        <div>
+          <button onClick={handlePromptSubmit} style={{ padding: '6px 12px' }}>Submit Prompt</button>
+        </div>
       </div>
 
       <ReactFlow
