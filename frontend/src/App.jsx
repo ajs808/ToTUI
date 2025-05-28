@@ -150,6 +150,7 @@ export default function App() {
       </div>
 
       <ReactFlow
+        colorMode="light"
         nodes={nodes.map((n) => ({
           ...n,
           style: n.data.rank === 1 ? { border: '2px solid gold', background: '#fffbea' } : {},
