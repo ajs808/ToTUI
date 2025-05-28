@@ -43,6 +43,11 @@ export default function App() {
   const [breadth, setBreadth] = useState(3);
   const [autoSolve, setAutoSolve] = useState(false);
   const [maxDepth, setMaxDepth] = useState(3);
+  const [llmModel, setLlmModel] = useState('gpt-4');
+  const [temperature, setTemperature] = useState(0.7);
+  const [generationMethod, setGenerationMethod] = useState('sample');
+  const [evaluationMethod, setEvaluationMethod] = useState('value');
+  const [searchMethod, setSearchMethod] = useState('bfs');
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -106,6 +111,19 @@ export default function App() {
     }
   };
 
+  const handleResetFields = () => {
+    setPrompt('');
+    setBreadth(3);
+    setMaxDepth(3);
+    setAutoSolve(false);
+  };
+
+  const handleClearGraph = () => {
+    setNodes([]);
+    setEdges([]);
+    idCounter = 2;
+  };
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <div style={{ 
@@ -116,7 +134,8 @@ export default function App() {
         borderRadius: '8px', 
         left: 10, 
         top: 10,
-        border: '1px solid black'
+        border: '1px solid black',
+        width: '300px'
       }}>
         <div style={{ marginBottom: '8px' }}>
           <label style={{ display: 'block', marginBottom: '4px' }}>Problem Prompt</label>
@@ -125,9 +144,73 @@ export default function App() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter problem prompt"
-            style={{ width: '300px', padding: '4px' }}
+            style={{ width: '100%', padding: '4px' }}
           />
         </div>
+
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>LLM Model</label>
+          <select 
+            value={llmModel} 
+            onChange={(e) => setLlmModel(e.target.value)}
+            style={{ width: '100%', padding: '4px' }}
+          >
+            <option value="gpt-3.5">GPT-3.5</option>
+            <option value="gpt-4">GPT-4</option>
+            <option value="gpt-4o">GPT-4o</option>
+          </select>
+        </div>
+
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>Temperature: {temperature}</label>
+          <input
+            type="range"
+            min="0"
+            max="2"
+            step="0.1"
+            value={temperature}
+            onChange={(e) => setTemperature(parseFloat(e.target.value))}
+            style={{ width: '100%' }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>Generation Method</label>
+          <select 
+            value={generationMethod} 
+            onChange={(e) => setGenerationMethod(e.target.value)}
+            style={{ width: '100%', padding: '4px' }}
+          >
+            <option value="sample">Sample</option>
+            <option value="propose">Propose</option>
+          </select>
+        </div>
+
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>Evaluation Method</label>
+          <select 
+            value={evaluationMethod} 
+            onChange={(e) => setEvaluationMethod(e.target.value)}
+            style={{ width: '100%', padding: '4px' }}
+          >
+            <option value="value">Value</option>
+            <option value="vote">Vote</option>
+          </select>
+        </div>
+
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>Search Method</label>
+          <select 
+            value={searchMethod} 
+            onChange={(e) => setSearchMethod(e.target.value)}
+            style={{ width: '100%', padding: '4px' }}
+          >
+            <option value="bfs">BFS</option>
+            <option value="dfs">DFS</option>
+            <option value="astar">A*</option>
+          </select>
+        </div>
+
         <div style={{ marginBottom: '8px' }}>
           <label style={{ display: 'block', marginBottom: '4px' }}>Breadth (number of thoughts per node)</label>
           <input
@@ -139,9 +222,7 @@ export default function App() {
             style={{ width: '80px', padding: '4px' }}
           />
         </div>
-        <div style={{ marginBottom: '8px' }}>
-          <label><input type="checkbox" checked={autoSolve} onChange={(e) => setAutoSolve(e.target.checked)} /> Auto-solve</label>
-        </div>
+
         <div style={{ marginBottom: '8px' }}>
           <label style={{ display: 'block', marginBottom: '4px' }}>Max Depth</label>
           <input
@@ -153,7 +234,12 @@ export default function App() {
             style={{ width: '80px', padding: '4px' }}
           />
         </div>
-        <div>
+
+        <div style={{ marginBottom: '8px' }}>
+          <label><input type="checkbox" checked={autoSolve} onChange={(e) => setAutoSolve(e.target.checked)} /> Auto-solve</label>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
           <button 
             onClick={handlePromptSubmit} 
             style={{ 
@@ -166,6 +252,32 @@ export default function App() {
             }}
           >
             Submit Prompt
+          </button>
+          <button 
+            onClick={handleResetFields} 
+            style={{ 
+              padding: '6px 12px',
+              backgroundColor: '#6c757d',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Reset Fields
+          </button>
+          <button 
+            onClick={handleClearGraph} 
+            style={{ 
+              padding: '6px 12px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Clear Graph
           </button>
         </div>
       </div>
