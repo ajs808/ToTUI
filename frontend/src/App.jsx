@@ -108,7 +108,16 @@ export default function App() {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <div style={{ padding: '10px', position: 'absolute', zIndex: 10, background: 'white', borderRadius: '8px', left: 10, top: 10 }}>
+      <div style={{ 
+        padding: '10px', 
+        position: 'absolute', 
+        zIndex: 10, 
+        background: 'white', 
+        borderRadius: '8px', 
+        left: 10, 
+        top: 10,
+        border: '1px solid black'
+      }}>
         <div style={{ marginBottom: '8px' }}>
           <label style={{ display: 'block', marginBottom: '4px' }}>Problem Prompt</label>
           <input
@@ -145,7 +154,19 @@ export default function App() {
           />
         </div>
         <div>
-          <button onClick={handlePromptSubmit} style={{ padding: '6px 12px' }}>Submit Prompt</button>
+          <button 
+            onClick={handlePromptSubmit} 
+            style={{ 
+              padding: '6px 12px',
+              backgroundColor: '#0066cc',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Submit Prompt
+          </button>
         </div>
       </div>
 
