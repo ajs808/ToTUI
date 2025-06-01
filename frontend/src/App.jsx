@@ -50,6 +50,8 @@ export default function App() {
   const [generationMethod, setGenerationMethod] = useState('sample');
   const [evaluationMethod, setEvaluationMethod] = useState('value');
   const [searchMethod, setSearchMethod] = useState('bfs');
+  const [editingNodeId, setEditingNodeId] = useState(null);
+  const [editValue, setEditValue] = useState('');
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -126,6 +128,18 @@ export default function App() {
     setNodes([]);
     setEdges([]);
     idCounter = 2;
+  };
+
+  const handleEditSubmit = (nodeId) => {
+    setNodes((nds) =>
+      nds.map((n) =>
+        n.id === nodeId
+          ? { ...n, data: { ...n.data, label: editValue } }
+          : n
+      )
+    );
+    setEditingNodeId(null);
+    setEditValue('');
   };
 
   return (
@@ -350,19 +364,94 @@ export default function App() {
                     Score: {n.data.score} | Rank: {n.data.rank}
                   </div>
                 )}
-                <button
-                  onClick={() => expandNode(n)}
-                  style={{
-                    marginTop: '8px',
-                    padding: '4px 8px',
-                    backgroundColor: '#0066cc',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px'
-                  }}
-                >+</button>
+                <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', marginTop: '8px' }}>
+                  <button
+                    onClick={() => {
+                      setEditingNodeId(n.id);
+                      setEditValue(n.data.label);
+                    }}
+                    style={{
+                      padding: '4px 8px',
+                      backgroundColor: '#6c757d',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={() => expandNode(n)}
+                    style={{
+                      padding: '4px 8px',
+                      backgroundColor: '#0066cc',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+                {editingNodeId === n.id && (
+                  <div style={{ 
+                    position: 'absolute', 
+                    top: '50%', 
+                    left: '50%', 
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'white',
+                    padding: '20px',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    zIndex: 1000
+                  }}>
+                    <textarea
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      style={{
+                        width: '300px',
+                        height: '100px',
+                        padding: '8px',
+                        marginBottom: '10px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        resize: 'vertical'
+                      }}
+                    />
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                      <button
+                        onClick={() => setEditingNodeId(null)}
+                        style={{
+                          padding: '4px 12px',
+                          backgroundColor: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => handleEditSubmit(n.id)}
+                        style={{
+                          padding: '4px 12px',
+                          backgroundColor: '#28a745',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ),
           },
