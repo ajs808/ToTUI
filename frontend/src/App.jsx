@@ -394,7 +394,7 @@ export default function App() {
                       fontSize: '12px'
                     }}
                   >
-                    +
+                    ✨️
                   </button>
                 </div>
                 {editingNodeId === n.id && (
