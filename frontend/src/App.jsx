@@ -342,15 +342,27 @@ export default function App() {
           style: n.data.rank === 1 ? { border: '2px solid gold', background: '#fffbea' } : {},
           data: {
             ...n.data,
-            onClick: () => expandNode(n),
             label: (
-              <div onClick={() => expandNode(n)} style={{ cursor: 'pointer' }}>
+              <div style={{ textAlign: 'center' }}>
                 <div><strong>{n.data.label}</strong></div>
                 {n.data.score !== undefined && (
                   <div style={{ fontSize: '0.75em', color: 'gray' }}>
                     Score: {n.data.score} | Rank: {n.data.rank}
                   </div>
                 )}
+                <button
+                  onClick={() => expandNode(n)}
+                  style={{
+                    marginTop: '8px',
+                    padding: '4px 8px',
+                    backgroundColor: '#0066cc',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '12px'
+                  }}
+                >+</button>
               </div>
             ),
           },
