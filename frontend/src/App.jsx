@@ -66,8 +66,8 @@ export default function App() {
 
     const parentLevel = parentNode.data.level || 0;
     const childLevel = parentLevel + 1;
-    const baseSpacing = 5000;
-    const spacing = baseSpacing / Math.pow(3, childLevel);
+    const baseSpacing = 600;
+    const spacing = baseSpacing / Math.pow(2, childLevel);
     const totalWidth = (children.length - 1) * spacing;
 
     const newNodes = children.map((child, idx) => {
