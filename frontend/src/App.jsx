@@ -52,6 +52,8 @@ export default function App() {
   const [searchMethod, setSearchMethod] = useState('bfs');
   const [editingNodeId, setEditingNodeId] = useState(null);
   const [editValue, setEditValue] = useState('');
+  const [addingNodeId, setAddingNodeId] = useState(null);
+  const [newThoughtValue, setNewThoughtValue] = useState('');
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -140,6 +142,45 @@ export default function App() {
     );
     setEditingNodeId(null);
     setEditValue('');
+  };
+
+  const handleAddThought = (parentNode) => {
+    const parentId = parentNode.id;
+    const parentLevel = parentNode.data.level || 0;
+    const childLevel = parentLevel + 1;
+    const baseSpacing = 600;
+    const spacing = baseSpacing / Math.pow(2, childLevel);
+    
+    // Get existing children to calculate position
+    const existingChildren = nodes.filter(n => n.data.parentId === parentId);
+    const totalWidth = (existingChildren.length) * spacing;
+    
+    const newId = getId();
+    const newNode = {
+      id: newId,
+      position: {
+        x: parentNode.position.x - totalWidth / 2 + existingChildren.length * spacing,
+        y: parentNode.position.y + 150,
+      },
+      data: {
+        label: newThoughtValue,
+        level: childLevel,
+        parentId,
+        score: 0.5, // Default score for custom thoughts
+        rank: existingChildren.length + 1, // Add to end
+      },
+    };
+
+    const newEdge = {
+      id: `e${parentId}-${newId}`,
+      source: parentId,
+      target: newId,
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+    setEdges((eds) => [...eds, newEdge]);
+    setAddingNodeId(null);
+    setNewThoughtValue('');
   };
 
   return (
@@ -396,6 +437,23 @@ export default function App() {
                   >
                     ✨️
                   </button>
+                  <button
+                    onClick={() => {
+                      setAddingNodeId(n.id);
+                      setNewThoughtValue('');
+                    }}
+                    style={{
+                      padding: '4px 8px',
+                      backgroundColor: '#28a745',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >
+                    +
+                  </button>
                 </div>
                 {editingNodeId === n.id && (
                   <div style={{ 
@@ -448,6 +506,62 @@ export default function App() {
                         }}
                       >
                         Save
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {addingNodeId === n.id && (
+                  <div style={{ 
+                    position: 'absolute', 
+                    top: '50%', 
+                    left: '50%', 
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'white',
+                    padding: '20px',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    zIndex: 1000
+                  }}>
+                    <textarea
+                      value={newThoughtValue}
+                      onChange={(e) => setNewThoughtValue(e.target.value)}
+                      placeholder="Enter your thought..."
+                      style={{
+                        width: '300px',
+                        height: '100px',
+                        padding: '8px',
+                        marginBottom: '10px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        resize: 'vertical'
+                      }}
+                    />
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                      <button
+                        onClick={() => setAddingNodeId(null)}
+                        style={{
+                          padding: '4px 12px',
+                          backgroundColor: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => handleAddThought(n)}
+                        style={{
+                          padding: '4px 12px',
+                          backgroundColor: '#28a745',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Add Thought
                       </button>
                     </div>
                   </div>
