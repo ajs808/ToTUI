@@ -40,6 +40,8 @@ export default function App() {
   ]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [prompt, setPrompt] = useState('');
+  const [oneShotExample, setOneShotExample] = useState('');
+  const [evaluationPrompt, setEvaluationPrompt] = useState('');
   const [breadth, setBreadth] = useState(3);
   const [autoSolve, setAutoSolve] = useState(false);
   const [maxDepth, setMaxDepth] = useState(3);
@@ -113,6 +115,8 @@ export default function App() {
 
   const handleResetFields = () => {
     setPrompt('');
+    setOneShotExample('');
+    setEvaluationPrompt('');
     setBreadth(3);
     setMaxDepth(3);
     setAutoSolve(false);
@@ -138,13 +142,62 @@ export default function App() {
         width: '300px'
       }}>
         <div style={{ marginBottom: '8px' }}>
-          <label style={{ display: 'block', marginBottom: '4px' }}>Problem Prompt</label>
-          <input
-            type="text"
+          <label style={{ display: 'block', marginBottom: '4px' }}>Main Problem Prompt</label>
+          <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter problem prompt"
-            style={{ width: '100%', padding: '4px' }}
+            style={{ 
+              width: '95%', 
+              padding: '8px',
+              minHeight: '100px',
+              resize: 'vertical',
+              fontFamily: 'inherit',
+              fontSize: '14px',
+              lineHeight: '1.4',
+              border: '1px solid #ddd',
+              borderRadius: '4px'
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>One-shot Example</label>
+          <textarea
+            value={oneShotExample}
+            onChange={(e) => setOneShotExample(e.target.value)}
+            placeholder="Enter one-shot example"
+            style={{ 
+              width: '95%', 
+              padding: '8px',
+              minHeight: '100px',
+              resize: 'vertical',
+              fontFamily: 'inherit',
+              fontSize: '14px',
+              lineHeight: '1.4',
+              border: '1px solid #ddd',
+              borderRadius: '4px'
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', marginBottom: '4px' }}>Evaluation Prompt</label>
+          <textarea
+            value={evaluationPrompt}
+            onChange={(e) => setEvaluationPrompt(e.target.value)}
+            placeholder="Enter evaluation prompt"
+            style={{ 
+              width: '95%', 
+              padding: '8px',
+              minHeight: '100px',
+              resize: 'vertical',
+              fontFamily: 'inherit',
+              fontSize: '14px',
+              lineHeight: '1.4',
+              border: '1px solid #ddd',
+              borderRadius: '4px'
+            }}
           />
         </div>
 
