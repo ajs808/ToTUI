@@ -8,23 +8,6 @@ A comprehensive implementation of the Tree of Thoughts (ToT) framework with an i
 
 This project implements the Tree of Thoughts methodology from the paper ["Tree of Thoughts: Deliberate Problem Solving with Large Language Models"](https://arxiv.org/abs/2305.10601), providing both a Python backend for running ToT algorithms and a React-based frontend for interactive visualization and exploration.
 
-## Features
-
-### Backend (Python)
-- **Multiple Task Support**: Game24, Text Generation, and Crosswords
-- **Flexible Search Methods**: BFS (Breadth-First Search) with support for different generation, evaluation, and selection strategies
-- **LLM Integration**: Support for GPT-3.5, GPT-4, and GPT-4o models
-- **Configurable Parameters**: Temperature, sampling methods, evaluation strategies
-- **RESTful API**: Flask-based API for frontend integration
-- **Comprehensive Logging**: Detailed logging of search processes and results
-
-### Frontend (React)
-- **Interactive Tree Visualization**: Real-time visualization of thought trees using ReactFlow
-- **Manual Node Editing**: Edit, expand, and add custom thoughts to nodes
-- **Configurable Parameters**: Adjust LLM settings, search parameters, and visualization options
-- **Auto-solve Mode**: Automatically expand the best nodes to explore solution paths
-- **Modern UI**: Clean, responsive interface with intuitive controls
-
 ## Installation
 
 ### Prerequisites
