@@ -2,6 +2,8 @@
 
 A comprehensive implementation of the Tree of Thoughts (ToT) framework with an interactive web interface for visualizing and exploring thought processes in large language model problem-solving.
 
+<img width="1721" height="953" alt="ToTUI (1)" src="https://github.com/user-attachments/assets/4fd75bbb-373f-4f51-b568-2467d4917a1d" />
+
 ## Overview
 
 This project implements the Tree of Thoughts methodology from the paper ["Tree of Thoughts: Deliberate Problem Solving with Large Language Models"](https://arxiv.org/abs/2305.10601), providing both a Python backend for running ToT algorithms and a React-based frontend for interactive visualization and exploration.
